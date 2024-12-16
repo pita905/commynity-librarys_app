@@ -167,5 +167,16 @@ public class LibraryDatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return bookList;
     }
+    public long addLibrary(String name, String location) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name); // Library name
+        values.put("location", location); // Library location
+
+        // Insert into the libraries table
+        long result = db.insert("libraries", null, values);
+        db.close();
+        return result; // Returns row ID if successful, -1 otherwise
+    }
 
 }

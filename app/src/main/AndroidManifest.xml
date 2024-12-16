@@ -26,6 +26,8 @@
         <activity android:name=".DashboardActivity"/>
         <activity android:name=".SearchActivity"/>
         <activity android:name=".LibraryDetailsActivity" />
+        <activity android:name=".AdminPanelActivity" />
+
 
 
 

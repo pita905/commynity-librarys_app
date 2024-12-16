@@ -4,17 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
     android:padding="16dp">
 
     <!-- Title -->
     <TextView
+        android:id="@+id/txtAppTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dashboard"
+        android:text="Library Dashboard"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp"
+        android:gravity="center" />
 
     <!-- Buttons -->
     <Button
@@ -44,12 +45,24 @@
         android:text="Map View"
         android:layout_marginTop="10dp" />
 
+    <!-- Hidden Admin Panel Button -->
+    <Button
+        android:id="@+id/btnAdminPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Admin Panel"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:backgroundTint="@color/teal_700"
+        android:textColor="@android:color/white" />
+
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Logout"
-        android:textColor="@android:color/white"
-        android:background="@android:color/holo_red_dark"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/holo_red_light"
+        android:textColor="@android:color/white" />
+
 </LinearLayout>
