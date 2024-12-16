@@ -27,9 +27,11 @@ public class DashboardActivity extends AppCompatActivity {
         btnSearchLibraries.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //startActivity(new Intent(DashboardActivity.this, SearchLibrariesActivity.class));
+                Intent intent = new Intent(DashboardActivity.this, SearchActivity.class);
+                startActivity(intent);
             }
         });
+
 
         // Navigate to Nearby Libraries Page
         btnNearbyLibraries.setOnClickListener(new View.OnClickListener() {
