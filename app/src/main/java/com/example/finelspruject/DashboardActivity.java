@@ -4,6 +4,7 @@ package com.example.finelspruject;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -35,10 +36,8 @@ public class DashboardActivity extends AppCompatActivity {
         //  buttons
         btnSearchLibraries = findViewById(R.id.btnSearchLibraries);
         btnNearbyLibraries = findViewById(R.id.btnNearbyLibraries);
-        btnCategories = findViewById(R.id.btnCategories);
         btnMapView = findViewById(R.id.btnMapView);
         btnAdminPanel = findViewById(R.id.btnAdminPanel);
-        btnLogout = findViewById(R.id.btnLogout);
         txtAppTitle = findViewById(R.id.txtAppTitle);
 
         // hide the Admin Panel button
@@ -117,16 +116,24 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-        // Log out: Navigate back to Login Page
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear back stack
-                startActivity(intent);
-                finish(); // Close DashboardActivity
-            }
-        });
+
+    }
+
+
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Fragment selectedFragment = null;
+
+        String username = getIntent().getStringExtra("username"); // Get the logged-in username
+
+        if (item.getItemId() == R.id.navigation_dashboard) {
+            selectedFragment = new DashboardFragment();
+        } else if (item.getItemId() == R.id.navigation_profile) {
+            selectedFragment = ProfileFragment.newInstance(username); // Pass username to ProfileFragment
+        } else if (item.getItemId() == R.id.navigation_settings) {
+            selectedFragment = new SettingsFragment();
+        }
+
+        return loadFragment(selectedFragment);
     }
 
 
@@ -177,7 +184,8 @@ public class DashboardActivity extends AppCompatActivity {
         // Show the dialog
         builder.create().show();
     }
-    }
+
+}
 
 
 

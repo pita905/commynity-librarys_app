@@ -31,12 +31,6 @@
         android:text="View Nearby Libraries"
         android:layout_marginTop="10dp" />
 
-    <Button
-        android:id="@+id/btnCategories"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Browse Categories"
-        android:layout_marginTop="10dp" />
 
     <Button
         android:id="@+id/btnMapView"
@@ -56,14 +50,7 @@
         android:backgroundTint="@color/teal_700"
         android:textColor="@android:color/white" />
 
-    <Button
-        android:id="@+id/btnLogout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/holo_red_light"
-        android:textColor="@android:color/white" />
+
     <!-- FrameLayout for hosting fragments -->
     <FrameLayout
         android:id="@+id/fragment_container"

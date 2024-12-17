@@ -42,18 +42,17 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Check if credentials are valid using the DatabaseHelper
                 if (dbHelper.validateUser(username, password)) {
-                    if (dbHelper.validateUser(username, password)) {
-                        Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
 
-                        // Navigate to Dashboard
-                        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                        startActivity(intent);
-                        finish(); // Close LoginActivity
-                    }
+                    // Pass the username to the DashboardActivity
+                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                    intent.putExtra("username", username);
+                    startActivity(intent);
+                    finish(); // Close LoginActivity
                 } else {
-                    // Show error if credentials are invalid
-                    Toast.makeText(LoginActivity.this, "Invalid Username or Password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
     }

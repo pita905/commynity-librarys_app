@@ -6,6 +6,8 @@ import android.database.Cursor;       // To query and fetch results from the dat
 import android.database.sqlite.SQLiteDatabase; // SQLite database management class
 import android.database.sqlite.SQLiteOpenHelper; // SQLite helper to manage database creation and updates
 
+import java.util.HashMap;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Database name and version
@@ -128,4 +130,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         cursor.close(); // Close the cursor to release resources
     }
+    public HashMap<String, String> getUserDetails(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        HashMap<String, String> userDetails = new HashMap<>();
+
+        // Query to get user details
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE username = ?", new String[]{username});
+
+        if (cursor.moveToFirst()) {
+            userDetails.put("username", cursor.getString(cursor.getColumnIndexOrThrow("username")));
+            userDetails.put("email", cursor.getString(cursor.getColumnIndexOrThrow("email"))); // Example column
+            userDetails.put("name", cursor.getString(cursor.getColumnIndexOrThrow("name")));   // Example column
+        }
+        cursor.close();
+        db.close();
+        return userDetails;
+    }
+
 }
