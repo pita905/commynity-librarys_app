@@ -4,6 +4,7 @@ package com.example.finelspruject;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -15,16 +16,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.example.finelspruject.fragments.DashboardFragment;
 import com.example.finelspruject.fragments.ProfileFragment;
 import com.example.finelspruject.fragments.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.example.finelspruject.R;
-import com.google.android.material.navigation.NavigationBarView;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    Button btnSearchLibraries, btnNearbyLibraries, btnCategories, btnMapView, btnAdminPanel, btnLogout;
+    Button btnSearchLibraries, btnNearbyLibraries, btnCategories, btnMapView, btnAdminPanel;
     TextView txtAppTitle; // For triggering the hidden admin access
     private static final String ADMIN_PASSWORD = "1234"; // Admin password
     BottomNavigationView bottomNavigationView;
@@ -39,30 +37,32 @@ public class DashboardActivity extends AppCompatActivity {
         btnMapView = findViewById(R.id.btnMapView);
         btnAdminPanel = findViewById(R.id.btnAdminPanel);
         txtAppTitle = findViewById(R.id.txtAppTitle);
-
-        // hide the Admin Panel button
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
         btnAdminPanel.setVisibility(View.GONE);
 
-        // Initialize BottomNavigationView
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-
+        String username = getIntent().getStringExtra("username");
+        if (username == null) {
+            Log.e("DashboardActivity", "Username is null");
+            Toast.makeText(this, "Error: Username not found. Please log in again.", Toast.LENGTH_SHORT).show();
+            finish(); // Exit to prevent undefined behavior
+            return;
+        }
         // Set default fragment
-        loadFragment(new DashboardFragment());
+        loadFragment(ProfileFragment.newInstance(username));
 
         // Handle navigation item clicks
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
-            if (item.getItemId() == R.id.navigation_dashboard) {
-                selectedFragment = new DashboardFragment();
-            } else if (item.getItemId() == R.id.navigation_profile) {
-                selectedFragment = new ProfileFragment();
+
+            if (item.getItemId() == R.id.navigation_profile) {
+                selectedFragment = ProfileFragment.newInstance(username); // Pass username to ProfileFragment
             } else if (item.getItemId() == R.id.navigation_settings) {
                 selectedFragment = new SettingsFragment();
             }
 
             return loadFragment(selectedFragment);
-
         });
+
 
         // Secret action: Long-press the title to show password prompt
         txtAppTitle.setOnLongClickListener(new View.OnLongClickListener() {
@@ -74,23 +74,26 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
         // Admin Panel Button Click
-        btnAdminPanel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(DashboardActivity.this, AdminPanelActivity.class));
-            }
-        });
+        if (btnAdminPanel != null) {
+            btnAdminPanel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Open Admin Panel
+                    startActivity(new Intent(DashboardActivity.this, AdminPanelActivity.class));
+                }
+            });
+        } else {
+            Log.e("DashboardActivity", "btnAdminPanel is null. Check your layout.");
+        }
 
 
         // Navigate to Search Libraries Page
         btnSearchLibraries.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DashboardActivity.this, SearchActivity.class);
-                startActivity(intent);
+                 startActivity(new Intent(DashboardActivity.this,SearchActivity.class));
             }
         });
-
 
         // Navigate to Nearby Libraries Page
         btnNearbyLibraries.setOnClickListener(new View.OnClickListener() {
@@ -100,13 +103,6 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-        // Navigate to Categories Page
-        btnCategories.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // startActivity(new Intent(DashboardActivity.this, CategoriesActivity.class));
-            }
-        });
 
         // Navigate to Map View Page
         btnMapView.setOnClickListener(new View.OnClickListener() {
@@ -125,9 +121,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         String username = getIntent().getStringExtra("username"); // Get the logged-in username
 
-        if (item.getItemId() == R.id.navigation_dashboard) {
-            selectedFragment = new DashboardFragment();
-        } else if (item.getItemId() == R.id.navigation_profile) {
+        if (item.getItemId() == R.id.navigation_profile) {
             selectedFragment = ProfileFragment.newInstance(username); // Pass username to ProfileFragment
         } else if (item.getItemId() == R.id.navigation_settings) {
             selectedFragment = new SettingsFragment();
@@ -135,6 +129,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         return loadFragment(selectedFragment);
     }
+
 
 
     /**
@@ -147,8 +142,10 @@ public class DashboardActivity extends AppCompatActivity {
                     .commit();
             return true;
         }
+        Log.e("DashboardActivity", "loadFragment: Fragment is null");
         return false;
     }
+
 
     // Show a password dialog to authenticate access to the Admin Panel.
 

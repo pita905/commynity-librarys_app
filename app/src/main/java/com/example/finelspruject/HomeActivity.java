@@ -26,7 +26,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Navigate to the LoginActivity when Login button is clicked
-                startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+                Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                startActivity(intent);
             }
         });
 

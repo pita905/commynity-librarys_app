@@ -2,11 +2,13 @@ package com.example.finelspruject.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,8 +41,14 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Retrieve username from arguments
         if (getArguments() != null) {
-            username = getArguments().getString(ARG_USERNAME); // Retrieve username
+            username = getArguments().getString("username");
+        }
+
+        if (username == null) {
+            Log.e("ProfileFragment", "Username is null");
         }
     }
 
@@ -48,22 +56,32 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-
+        dbHelper = new DatabaseHelper(getActivity());
         // Initialize views
         txtName = view.findViewById(R.id.txtName);
         txtEmail = view.findViewById(R.id.txtEmail);
         txtUsername = view.findViewById(R.id.txtUsername);
         btnLogout = view.findViewById(R.id.btnLogout);
 
-        dbHelper = new DatabaseHelper(getActivity());
-
+        String username = getArguments() != null ? getArguments().getString("username") : null;
+        if (username == null) {
+            Log.e("ProfileFragment", "Username is null");
+            Toast.makeText(getActivity(), "Error: User not found.", Toast.LENGTH_SHORT).show();
+            return view;
+        }
         // Fetch user details from the database
         HashMap<String, String> userDetails = dbHelper.getUserDetails(username);
 
         // Display user details
-        txtName.setText("Name: " + userDetails.get("name"));
-        txtEmail.setText("Email: " + userDetails.get("email"));
-        txtUsername.setText("Username: " + userDetails.get("username"));
+        if (userDetails.isEmpty()) {
+            Log.e("ProfileFragment", "User details not found for username: " + username);
+            Toast.makeText(getActivity(), "Error: User details not found.", Toast.LENGTH_SHORT).show();
+        } else {
+            // Display user details
+            txtName.setText("Name: " + userDetails.get("name"));
+            txtEmail.setText("Email: " + userDetails.get("email"));
+            txtUsername.setText("Username: " + userDetails.get("username"));
+        }
 
         // Logout button action
         btnLogout.setOnClickListener(v -> {

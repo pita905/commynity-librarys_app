@@ -44,14 +44,15 @@ public class LoginActivity extends AppCompatActivity {
                 if (dbHelper.validateUser(username, password)) {
                     Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
 
-                    // Pass the username to the DashboardActivity
+                    // Ensure username is passed to DashboardActivity
                     Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                    intent.putExtra("username", username);
+                    intent.putExtra("username", username); // Pass the username
                     startActivity(intent);
                     finish(); // Close LoginActivity
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
                 }
+
 
             }
         });
