@@ -15,7 +15,7 @@ public class LoginActivity extends AppCompatActivity {
     // Declare input fields and login button
     EditText edtUsername, edtPassword;
     Button btnLogin;
-
+    Button btnBack;
     // Declare DatabaseHelper for accessing the SQLite database
     DatabaseHelper dbHelper;
 
@@ -31,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         edtUsername = findViewById(R.id.edtUsername);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        btnBack = findViewById(R.id.btnBack);
 
         // Set click listener for the Login button
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -56,5 +57,12 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+    btnBack.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+        startActivity(intent);
+        }
+    });
     }
 }

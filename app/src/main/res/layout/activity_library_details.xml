@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -8,24 +6,36 @@
 
     <TextView
         android:id="@+id/txtLibraryName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Library Name"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="10dp" />
+        android:textSize="18sp"
+        android:paddingBottom="8dp" />
 
     <TextView
         android:id="@+id/txtLibraryLocation"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Location"
         android:textSize="18sp"
-        android:layout_marginBottom="20dp" />
+        android:paddingBottom="16dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewBooks"
+    <ListView
+        android:id="@+id/listViewBooks"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
+    <Button
+        android:id="@+id/btnAddBook"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add New Book"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back" />
 </LinearLayout>

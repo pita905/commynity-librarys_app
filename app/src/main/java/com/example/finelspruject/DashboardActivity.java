@@ -22,7 +22,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    Button btnSearchLibraries, btnNearbyLibraries, btnCategories, btnMapView, btnAdminPanel;
+    Button btnSearchLibraries, btnMapView, btnAdminPanel;
     TextView txtAppTitle; // For triggering the hidden admin access
     private static final String ADMIN_PASSWORD = "1234"; // Admin password
     BottomNavigationView bottomNavigationView;
@@ -33,7 +33,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         //  buttons
         btnSearchLibraries = findViewById(R.id.btnSearchLibraries);
-        btnNearbyLibraries = findViewById(R.id.btnNearbyLibraries);
         btnMapView = findViewById(R.id.btnMapView);
         btnAdminPanel = findViewById(R.id.btnAdminPanel);
         txtAppTitle = findViewById(R.id.txtAppTitle);
@@ -48,7 +47,7 @@ public class DashboardActivity extends AppCompatActivity {
             return;
         }
         // Set default fragment
-        loadFragment(ProfileFragment.newInstance(username));
+       // loadFragment(ProfileFragment.newInstance(username));
 
         // Handle navigation item clicks
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -74,32 +73,26 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
         // Admin Panel Button Click
-        if (btnAdminPanel != null) {
-            btnAdminPanel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Open Admin Panel
-                    startActivity(new Intent(DashboardActivity.this, AdminPanelActivity.class));
-                }
-            });
-        } else {
-            Log.e("DashboardActivity", "btnAdminPanel is null. Check your layout.");
-        }
+       btnAdminPanel.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Intent intent = new Intent(DashboardActivity.this, AdminPanelActivity.class);
+               intent.putExtra("username", username);
+               startActivity(intent);
+               finish();
+           }
+       });
 
 
         // Navigate to Search Libraries Page
         btnSearchLibraries.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 startActivity(new Intent(DashboardActivity.this,SearchActivity.class));
-            }
-        });
-
-        // Navigate to Nearby Libraries Page
-        btnNearbyLibraries.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // startActivity(new Intent(DashboardActivity.this, NearbyLibrariesActivity.class));
+                // Ensure username is passed to SearchActivity
+                Intent intent = new Intent(DashboardActivity.this, SearchActivity.class);
+                intent.putExtra("username", username); // Pass the username
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -114,24 +107,6 @@ public class DashboardActivity extends AppCompatActivity {
 
 
     }
-
-
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment selectedFragment = null;
-
-        String username = getIntent().getStringExtra("username"); // Get the logged-in username
-
-        if (item.getItemId() == R.id.navigation_profile) {
-            selectedFragment = ProfileFragment.newInstance(username); // Pass username to ProfileFragment
-        } else if (item.getItemId() == R.id.navigation_settings) {
-            selectedFragment = new SettingsFragment();
-        }
-
-        return loadFragment(selectedFragment);
-    }
-
-
-
     /**
      * Method to load the selected fragment.
      */
@@ -148,7 +123,6 @@ public class DashboardActivity extends AppCompatActivity {
 
 
     // Show a password dialog to authenticate access to the Admin Panel.
-
     private void showPasswordDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Admin Access");

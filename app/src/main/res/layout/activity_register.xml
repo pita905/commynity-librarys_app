@@ -61,7 +61,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btnBack"
             android:text="back"
             android:backgroundTint="@color/holo_red_light"
             android:layout_width="wrap_content"

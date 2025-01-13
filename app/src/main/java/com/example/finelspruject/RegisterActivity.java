@@ -1,5 +1,6 @@
 package com.example.finelspruject;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class RegisterActivity extends AppCompatActivity {
 
     EditText edtName, edtEmail, edtUsername, edtPassword;
-    Button btnRegister;
+    Button btnRegister, btnBack;
     DatabaseHelper dbHelper;
 
     @Override
@@ -27,7 +28,16 @@ public class RegisterActivity extends AppCompatActivity {
         edtUsername = findViewById(R.id.edtUsername);
         edtPassword = findViewById(R.id.edtPassword);
         btnRegister = findViewById(R.id.btnRegister);
+        btnBack = findViewById(R.id.btnBack);
+
         dbHelper = new DatabaseHelper(this);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -11,6 +11,10 @@ public class Book {
         this.author = author;
         this.isbn = isbn;
     }
+    @Override
+    public String toString() {
+        return title; // or any field of the Book class to display
+    }
 
     // Getters and Setters
     public String getTitle() { return title; }

@@ -37,24 +37,9 @@ public class LibraryDatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // onCreate: Create tables when the database is initialized
+
     @Override
-//    public void onCreate(SQLiteDatabase db) {
-//        // Create Libraries table
-//        db.execSQL("CREATE TABLE " + TABLE_LIBRARIES + " (" +
-//                COL_LIBRARY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-//                COL_LIBRARY_NAME + " TEXT, " +
-//                COL_LIBRARY_LOCATION + " TEXT)");
-//
-//        // Create Books table
-//        db.execSQL("CREATE TABLE " + TABLE_BOOKS + " (" +
-//                COL_BOOK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-//                COL_BOOK_TITLE + " TEXT, " +
-//                COL_BOOK_AUTHOR + " TEXT, " +
-//                COL_BOOK_ISBN + " TEXT, " +
-//                COL_BOOK_LIBRARY_ID + " INTEGER, " +
-//                "FOREIGN KEY(" + COL_BOOK_LIBRARY_ID + ") REFERENCES " + TABLE_LIBRARIES + "(" + COL_LIBRARY_ID + "))");
-//    }
+
     public void onCreate(SQLiteDatabase db) {
         // Create Libraries table
         db.execSQL("CREATE TABLE libraries (" +
@@ -63,21 +48,15 @@ public class LibraryDatabaseHelper extends SQLiteOpenHelper {
                 "location TEXT)");
 
         // Create Books table
-        db.execSQL("CREATE TABLE books (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "title TEXT, " +
-                "author TEXT, " +
-                "isbn TEXT, " +
-                "library_id INTEGER, " +
-                "FOREIGN KEY(library_id) REFERENCES libraries(id))");
+        db.execSQL("CREATE TABLE books (\n" +
+                "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "    title TEXT,\n" +
+                "    author TEXT,\n" +
+                "    isbn TEXT,\n" +
+                "    library_id INTEGER,\n" +
+                "    FOREIGN KEY(library_id) REFERENCES libraries(id)\n" + ")");
     }
 
-   // @Override
-//    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKS);
-//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LIBRARIES);
-//        onCreate(db);
-//    }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop existing tables
@@ -88,29 +67,6 @@ public class LibraryDatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-
-    // Method to add a Library and its books
-    public long addLibrary(Library library) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        // Insert library
-        ContentValues libraryValues = new ContentValues();
-        libraryValues.put(COL_LIBRARY_NAME, library.getName());
-        libraryValues.put(COL_LIBRARY_LOCATION, library.getLocation());
-        long libraryId = db.insert(TABLE_LIBRARIES, null, libraryValues);
-
-        // Insert books associated with this library
-        for (Book book : library.getBooks()) {
-            ContentValues bookValues = new ContentValues();
-            bookValues.put(COL_BOOK_TITLE, book.getTitle());
-            bookValues.put(COL_BOOK_AUTHOR, book.getAuthor());
-            bookValues.put(COL_BOOK_ISBN, book.getIsbn());
-            bookValues.put(COL_BOOK_LIBRARY_ID, libraryId);
-            db.insert(TABLE_BOOKS, null, bookValues);
-        }
-
-        return libraryId;
-    }
 
     // Method to retrieve all libraries and their books
     public List<Library> getAllLibraries() {
@@ -177,6 +133,17 @@ public class LibraryDatabaseHelper extends SQLiteOpenHelper {
         long result = db.insert("libraries", null, values);
         db.close();
         return result; // Returns row ID if successful, -1 otherwise
+    }
+    public boolean addBookToLibraryWithImage(int libraryId, String title, String author, String imageBase64) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("library_id", libraryId);
+        values.put("title", title);
+        values.put("author", author);
+        values.put("isbn", imageBase64); // Store the image as a Base64 string in the `isbn` column
+
+        long result = db.insert("books", null, values);
+        return result != -1; // Returns true if insertion was successful
     }
 
 }
