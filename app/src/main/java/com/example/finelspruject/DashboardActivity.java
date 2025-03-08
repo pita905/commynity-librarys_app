@@ -1,8 +1,16 @@
 package com.example.finelspruject;
 
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -15,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
 
 import com.example.finelspruject.fragments.ProfileFragment;
 import com.example.finelspruject.fragments.SettingsFragment;
@@ -30,7 +39,6 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-
         //  buttons
         btnSearchLibraries = findViewById(R.id.btnSearchLibraries);
         btnMapView = findViewById(R.id.btnMapView);
@@ -46,8 +54,8 @@ public class DashboardActivity extends AppCompatActivity {
             finish(); // Exit to prevent undefined behavior
             return;
         }
-        // Set default fragment
-       // loadFragment(ProfileFragment.newInstance(username));
+
+
 
         // Handle navigation item clicks
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -57,6 +65,11 @@ public class DashboardActivity extends AppCompatActivity {
                 selectedFragment = ProfileFragment.newInstance(username); // Pass username to ProfileFragment
             } else if (item.getItemId() == R.id.navigation_settings) {
                 selectedFragment = new SettingsFragment();
+            } else if (item.getItemId() == R.id.navigation_exit) {
+                // Exit the app completely
+                finishAffinity();
+                System.exit(0);
+                return true; // Event handled, so return true
             }
 
             return loadFragment(selectedFragment);
@@ -101,8 +114,10 @@ public class DashboardActivity extends AppCompatActivity {
         btnMapView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //  startActivity(new Intent(DashboardActivity.this, MapViewActivity.class));
-            }
+                Intent intent = new Intent(DashboardActivity.this, MapsActivity.class);
+                intent.putExtra("username", username); // Pass the username
+                startActivity(intent);
+                finish();            }
         });
 
 
@@ -157,6 +172,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 }
+
 
 
 

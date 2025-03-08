@@ -12,13 +12,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.finelspruject.R;
 
 public class SettingsFragment extends Fragment {
 
     Switch switchNotifications;
-    Button btnChangePassword;
+    Button btnChangePassword, btnBack;
 
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -29,7 +30,15 @@ public class SettingsFragment extends Fragment {
         // Initialize views
         switchNotifications = view.findViewById(R.id.switchNotifications);
         btnChangePassword = view.findViewById(R.id.btnChangePassword);
+        btnBack = view.findViewById(R.id.btnBack);
 
+        // Back button action - Remove the fragment
+        btnBack.setOnClickListener(v -> {
+            // Remove the current fragment completely from the FragmentManager
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.remove(SettingsFragment.this); // Remove the current fragment
+            transaction.commit();
+        });
         // Toggle Notifications Switch
         switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {

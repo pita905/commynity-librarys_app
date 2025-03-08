@@ -13,8 +13,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.finelspruject.AdminPanelActivity;
+import com.example.finelspruject.DashboardActivity;
 import com.example.finelspruject.DatabaseHelper;
+import com.example.finelspruject.HomeActivity;
 import com.example.finelspruject.LoginActivity;
 import com.example.finelspruject.R;
 
@@ -26,7 +30,7 @@ public class ProfileFragment extends Fragment {
     private String username;
 
     TextView txtName, txtEmail, txtUsername;
-    Button btnLogout;
+    Button btnLogout, btnBack;
     DatabaseHelper dbHelper;
 
     // Factory method to create a new instance of the fragment with a username
@@ -62,6 +66,7 @@ public class ProfileFragment extends Fragment {
         txtEmail = view.findViewById(R.id.txtEmail);
         txtUsername = view.findViewById(R.id.txtUsername);
         btnLogout = view.findViewById(R.id.btnLogout);
+        btnBack = view.findViewById(R.id.btnBack);
 
         String username = getArguments() != null ? getArguments().getString("username") : null;
         if (username == null) {
@@ -82,6 +87,13 @@ public class ProfileFragment extends Fragment {
             txtEmail.setText("Email: " + userDetails.get("email"));
             txtUsername.setText("Username: " + userDetails.get("username"));
         }
+        // Back button action - Remove the fragment
+        btnBack.setOnClickListener(v -> {
+            // Remove the current fragment completely from the FragmentManager
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.remove(ProfileFragment.this); // Remove the current fragment
+            transaction.commit();
+        });
 
         // Logout button action
         btnLogout.setOnClickListener(v -> {
@@ -91,4 +103,8 @@ public class ProfileFragment extends Fragment {
 
         return view;
     }
+
+
+
 }
+

@@ -1,6 +1,7 @@
 package com.example.finelspruject;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +19,7 @@ import com.example.finelspruject.adapters.BookAdapter;
 import java.util.List;
 
 public class LibraryDetailsActivity extends AppCompatActivity {
-    Button btnBack, btnAddBook ;
+    Button btnBack, btnAddBook , btnNavigate;
     TextView txtLibraryName, txtLibraryLocation;
     ListView listViewBooks;
     LibraryDatabaseHelper dbHelper;
@@ -32,6 +33,7 @@ public class LibraryDetailsActivity extends AppCompatActivity {
         txtLibraryName = findViewById(R.id.txtLibraryName);
         txtLibraryLocation = findViewById(R.id.txtLibraryLocation);
         btnAddBook = findViewById(R.id.btnAddBook);
+        btnNavigate = findViewById(R.id.btnNavigate);
         btnBack = findViewById(R.id.btnBack);
         listViewBooks = findViewById(R.id.listViewBooks);
 
@@ -65,6 +67,27 @@ public class LibraryDetailsActivity extends AppCompatActivity {
                 Intent intent = new Intent(LibraryDetailsActivity.this, AddBookActivity.class);
                 intent.putExtra("library_id", libraryId);
                 startActivity(intent);
+            }
+        });
+        btnNavigate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String libraryLocation = getIntent().getStringExtra("library_location");
+
+                if (libraryLocation != null && !libraryLocation.isEmpty()) {
+                    // Launch Google Maps Navigation
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(libraryLocation));
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+
+                    if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(mapIntent);
+                    } else {
+                        Toast.makeText(LibraryDetailsActivity.this, "Google Maps app is not installed", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(LibraryDetailsActivity.this, "Invalid library location", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         btnBack.setOnClickListener(new View.OnClickListener() {

@@ -29,7 +29,6 @@ public class LibraryDatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_BOOK_ID = "id";
     private static final String COL_BOOK_TITLE = "title";
     private static final String COL_BOOK_AUTHOR = "author";
-    private static final String COL_BOOK_ISBN = "isbn";
     private static final String COL_BOOK_LIBRARY_ID = "library_id"; // Foreign key
 
     // Constructor
@@ -54,6 +53,7 @@ public class LibraryDatabaseHelper extends SQLiteOpenHelper {
                 "    author TEXT,\n" +
                 "    isbn TEXT,\n" +
                 "    library_id INTEGER,\n" +
+                "lastUpdated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                 "    FOREIGN KEY(library_id) REFERENCES libraries(id)\n" + ")");
     }
 
@@ -141,6 +141,7 @@ public class LibraryDatabaseHelper extends SQLiteOpenHelper {
         values.put("title", title);
         values.put("author", author);
         values.put("isbn", imageBase64); // Store the image as a Base64 string in the `isbn` column
+        values.put("lastUpdated", System.currentTimeMillis()); // Update timestamp
 
         long result = db.insert("books", null, values);
         return result != -1; // Returns true if insertion was successful

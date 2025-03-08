@@ -9,5 +9,9 @@
         android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_settings"
     android:title="Settings" />
-
+    <!-- Exit item -->
+    <item
+        android:id="@+id/navigation_exit"
+        android:icon="@drawable/ic_exit"
+        android:title="Exit" />
 </menu>

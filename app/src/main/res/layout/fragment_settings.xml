@@ -20,9 +20,10 @@
         android:id="@+id/switchNotifications"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:minHeight="48dp"
         android:text="Enable Notifications"
-        android:textSize="18sp"
-        android:layout_marginBottom="16dp" />
+        android:textSize="18sp" />
 
     <!-- Change Password Button -->
     <Button
@@ -33,6 +34,12 @@
         android:backgroundTint="@color/teal_700"
         android:textColor="@android:color/white"
         android:layout_marginBottom="16dp" />
+    <Button
+        android:id="@+id/btnBack"
+        android:text="back"
+        android:backgroundTint="@color/holo_red_light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 
 

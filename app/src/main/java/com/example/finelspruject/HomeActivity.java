@@ -1,11 +1,14 @@
 package com.example.finelspruject;
 
 import android.content.Intent; // Used to navigate to other activities
+import android.content.pm.PackageManager;
 import android.os.Bundle;      // To handle the activity's state
 import android.view.View;      // For handling button click events
 import android.widget.Button;  // UI Button component
 
 import androidx.appcompat.app.AppCompatActivity; // Base class for AppCompat activities
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -16,6 +19,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); // Call the parent class's onCreate method
         setContentView(R.layout.activity_homepage); // Set the layout file for the HomeActivity
+
 
         // Initialize buttons using their IDs defined in the XML layout
         btnLogin = findViewById(R.id.btnLogin);
