@@ -73,36 +73,35 @@ public class LibraryDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         List<Library> libraryList = new ArrayList<>();
 
-        // Query all libraries
-        Cursor libraryCursor = db.rawQuery("SELECT * FROM " + TABLE_LIBRARIES, null);
+        Cursor libraryCursor = db.rawQuery("SELECT * FROM libraries", null);
         if (libraryCursor.moveToFirst()) {
             do {
-                int libraryId = libraryCursor.getInt(0);
-                String libraryName = libraryCursor.getString(1);
-                String libraryLocation = libraryCursor.getString(2);
+                int libraryId = libraryCursor.getInt(libraryCursor.getColumnIndexOrThrow("id"));
+                String libraryName = libraryCursor.getString(libraryCursor.getColumnIndexOrThrow("name"));
+                String libraryLocation = libraryCursor.getString(libraryCursor.getColumnIndexOrThrow("location"));
 
-                // Get books for this library
                 List<Book> bookList = new ArrayList<>();
-                Cursor bookCursor = db.rawQuery("SELECT * FROM " + TABLE_BOOKS +
-                        " WHERE " + COL_BOOK_LIBRARY_ID + "=?", new String[]{String.valueOf(libraryId)});
+                Cursor bookCursor = db.rawQuery("SELECT * FROM books WHERE library_id=?", new String[]{String.valueOf(libraryId)});
                 if (bookCursor.moveToFirst()) {
                     do {
-                        String title = bookCursor.getString(1);
-                        String author = bookCursor.getString(2);
-                        String isbn = bookCursor.getString(3);
+                        String title = bookCursor.getString(bookCursor.getColumnIndexOrThrow("title"));
+                        String author = bookCursor.getString(bookCursor.getColumnIndexOrThrow("author"));
+                        String isbn = bookCursor.getString(bookCursor.getColumnIndexOrThrow("isbn"));
                         bookList.add(new Book(title, author, isbn));
                     } while (bookCursor.moveToNext());
                 }
                 bookCursor.close();
 
-                // Create a Library object and add it to the list
-                libraryList.add(new Library(libraryName, libraryLocation, bookList));
+                // 🚨 Now correctly pass the ID when creating Library object
+                libraryList.add(new Library(libraryId, libraryName, libraryLocation, bookList));
+
             } while (libraryCursor.moveToNext());
         }
         libraryCursor.close();
 
         return libraryList;
     }
+
     public List<Book> getBooksByLibraryId(int libraryId) {
         SQLiteDatabase db = this.getReadableDatabase();
         List<Book> bookList = new ArrayList<>();

@@ -3,28 +3,31 @@ package com.example.finelspruject;
 import java.util.List;
 
 public class Library {
+    private int id;
     private String name;
     private String location;
     private List<Book> books;
-    private int id;
 
-
-    // Constructor
-    public Library(String name, String location, List<Book> books) {
+    public Library(int id, String name, String location, List<Book> books) {
+        this.id = id;
         this.name = name;
         this.location = location;
         this.books = books;
     }
 
-    // Getters and Setters
-    public String getName() { return name; }
+    public int getId() {
+        return id;
+    }
 
-    public void setName(String name) { this.name = name; }
-    public String getLocation() { return location; }
-    public int getId() { return id; }
-    public void setLocation(String location) { this.location = location; }
+    public String getName() {
+        return name;
+    }
 
-    public List<Book> getBooks() { return books; }
-    public void setBooks(List<Book> books) { this.books = books; }
-    public void setId(int id) { this.id = id; }
+    public String getLocation() {
+        return location;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
 }

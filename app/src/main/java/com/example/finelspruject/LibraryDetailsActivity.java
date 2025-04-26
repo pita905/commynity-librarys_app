@@ -55,10 +55,7 @@ public class LibraryDetailsActivity extends AppCompatActivity {
         txtLibraryName.setText("Library Name: " + libraryName);
         txtLibraryLocation.setText("Location: " + libraryLocation);
 
-        // Fetch and display books
-        List<Book> bookList = dbHelper.getBooksByLibraryId(libraryId);
-        ArrayAdapter<Book> bookAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, bookList);
-        listViewBooks.setAdapter(bookAdapter);
+
 
         btnAddBook.setOnClickListener(new View.OnClickListener() {
             @Override
