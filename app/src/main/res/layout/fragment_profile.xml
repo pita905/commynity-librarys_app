@@ -44,15 +44,16 @@
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/splashBackground"
         android:text="Logout"
-        android:backgroundTint="@color/teal_700"
         android:textColor="@android:color/white"
         android:textStyle="bold" />
+
     <Button
         android:id="@+id/btnBack"
-        android:text="back"
-        android:backgroundTint="@color/holo_red_light"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:backgroundTint="#ABA8A8"
+        android:text="back" />
 
 </LinearLayout>

@@ -4,6 +4,16 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <TextView
+        android:id="@+id/txtAppTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="49dp"
+        android:layout_marginLeft="90dp"
+        android:layout_marginTop="50dp"
+        android:text="Search for Library"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
     <EditText
         android:id="@+id/edtSearchBar"
         android:layout_width="match_parent"
@@ -24,6 +34,6 @@
         android:id="@+id/btnBack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/holo_red_light"
+        android:backgroundTint="#ABA8A8"
         android:text="Back" />
 </LinearLayout>

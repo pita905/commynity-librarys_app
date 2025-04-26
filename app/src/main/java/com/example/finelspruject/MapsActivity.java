@@ -103,12 +103,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Enable My Location if permission is granted
+        // Check location permission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
+
+        // Handle marker clicks to open navigation
         mMap.setOnMarkerClickListener(marker -> {
             String uri = "google.navigation:q=" + marker.getPosition().latitude + "," + marker.getPosition().longitude;
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
@@ -117,9 +119,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return false;
         });
 
-        // Add library markers
-        addLibraryMarkers();
+        // If launched in "select" mode from AdminPanelActivity, enable long-press to choose location
+        if ("select".equals(getIntent().getStringExtra("mode"))) {
+            mMap.setOnMapLongClickListener(latLng -> {
+                Geocoder geocoder = new Geocoder(MapsActivity.this, Locale.getDefault());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                    if (addresses != null && !addresses.isEmpty()) {
+                        Address address = addresses.get(0);
+                        StringBuilder fullAddress = new StringBuilder();
+                        for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
+                            fullAddress.append(address.getAddressLine(i)).append(" ");
+                        }
+
+                        // Return the selected address to AdminPanelActivity
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("selected_address", fullAddress.toString().trim());
+                        setResult(RESULT_OK, resultIntent);
+                        finish(); // Done! Go back.
+                    } else {
+                        Toast.makeText(MapsActivity.this, "Address not found", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(MapsActivity.this, "Error getting address", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // If not in select mode, show library markers
+            addLibraryMarkers();
+        }
     }
+
 
     private void addLibraryMarkers() {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -139,7 +170,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // Handle permission results
+
     @Override
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {

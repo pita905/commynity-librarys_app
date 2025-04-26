@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0D3AF"
+    android:orientation="vertical"
     android:padding="16dp">
 
     <!-- App Title -->
@@ -11,32 +11,29 @@
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
+        android:layout_marginLeft="10dp"
         android:text="community public library's "
         android:textColor="#333333"
         android:textSize="30sp"
         android:textStyle="bold" />
 
+    <!-- Login Button -->
+
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="40dp"
-        app:srcCompat="@drawable/vistors_new" />
+        android:layout_width="273dp"
+        android:layout_height="328dp"
+        android:layout_marginLeft="50dp"
+        app:srcCompat="@drawable/box" />
 
-    <!-- Login Button -->
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewTitle"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="300dp"
         android:layout_marginEnd="40dp"
-        android:backgroundTint="#4CAF50"
+        android:backgroundTint="@color/splashBackground"
         android:text="Login"
         android:textColor="#FFFFFF" />
 
@@ -45,12 +42,11 @@
         android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnLogin"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="21dp"
         android:layout_marginEnd="40dp"
-        android:backgroundTint="#FF5722"
+        android:backgroundTint="@color/splashBackground"
         android:text="Register"
         android:textColor="#FFFFFF" />
 
-</RelativeLayout>
+</LinearLayout>

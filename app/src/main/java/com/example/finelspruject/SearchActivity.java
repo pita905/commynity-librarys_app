@@ -118,4 +118,6 @@ public class SearchActivity extends AppCompatActivity {
 
         listAdapter.notifyDataSetChanged(); // Notify adapter about data changes
     }
+
+
 }

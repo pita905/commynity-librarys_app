@@ -5,6 +5,16 @@
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/txtAppTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="49dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="50dp"
+        android:text="Library Details"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
         android:id="@+id/txtLibraryName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,19 +40,23 @@
         android:id="@+id/btnAddBook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add New Book"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/splashBackground"
+        android:text="Add New Book" />
+
     <Button
         android:id="@+id/btnNavigate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Navigate to Library"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/splashBackground"
+        android:text="Navigate to Library" />
 
     <Button
         android:id="@+id/btnBack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="#ABA8A8"
         android:text="Back" />
 
 </LinearLayout>

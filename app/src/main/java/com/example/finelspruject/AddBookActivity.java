@@ -27,6 +27,7 @@ public class AddBookActivity extends AppCompatActivity {
     ImageView imgBookCover;
     Button btnAddBook, btnSelectImage, btnCancel;
     LibraryDatabaseHelper dbHelper;
+    private static final int REQUEST_IMAGE_CAPTURE = 2;
 
     private Bitmap selectedBitmap = null; // Store the selected image as a Bitmap
     private static final int REQUEST_STORAGE_PERMISSION = 100;
@@ -86,9 +87,23 @@ public class AddBookActivity extends AppCompatActivity {
         btnSelectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Open the gallery to select an image
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                // Offer choice to the user: Camera or Gallery
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(AddBookActivity.this);
+                builder.setTitle("Select Image")
+                        .setItems(new String[]{"Take Photo", "Choose from Gallery"}, (dialog, which) -> {
+                            if (which == 0) {
+                                // Take a photo
+                                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                                    startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+                                }
+                            } else {
+                                // Pick from gallery
+                                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+                            }
+                        })
+                        .show();
             }
         });
 
@@ -105,19 +120,24 @@ public class AddBookActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri imageUri = data.getData();
-            try {
-                // Convert the selected image to a Bitmap
-                selectedBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                // Display the image in the ImageView
+        if (resultCode == RESULT_OK && data != null) {
+            if (requestCode == PICK_IMAGE_REQUEST) {
+                Uri imageUri = data.getData();
+                try {
+                    selectedBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                    imgBookCover.setImageBitmap(selectedBitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show();
+                }
+            } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                Bundle extras = data.getExtras();
+                selectedBitmap = (Bitmap) extras.get("data"); // Get thumbnail
                 imgBookCover.setImageBitmap(selectedBitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
 
     // Convert a Bitmap to a Base64 string
     private String convertBitmapToBase64(Bitmap bitmap) {

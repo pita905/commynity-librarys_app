@@ -30,6 +30,8 @@ public class AdminPanelActivity extends AppCompatActivity {
         btnAddLibrary = findViewById(R.id.btnAddLibrary);
         btnBack = findViewById(R.id.btnBack);
         dbHelper = new LibraryDatabaseHelper(this);
+
+
         String username = getIntent().getStringExtra("username");
         if (username == null) {
             Log.e("AdminPanelActivity", "Username is null");
@@ -37,6 +39,23 @@ public class AdminPanelActivity extends AppCompatActivity {
             finish(); // Exit to prevent undefined behavior
             return;
         }
+
+        edtLibraryLocation.setOnClickListener(new View.OnClickListener() {
+            private long lastClickTime = 0;
+
+            @Override
+            public void onClick(View v) {
+                long clickTime = System.currentTimeMillis();
+                if (clickTime - lastClickTime < 300) { // double click detected
+                    Intent intent = new Intent(AdminPanelActivity.this, MapsActivity.class);
+                    intent.putExtra("mode", "select"); // pass a flag to enable selection mode
+                    intent.putExtra("username", username); // Pass the username
+                    startActivityForResult(intent, 100); // unique request code
+                }
+                lastClickTime = clickTime;
+            }
+        });
+
         // Handle Add Library button click
         btnAddLibrary.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,10 +84,19 @@ public class AdminPanelActivity extends AppCompatActivity {
                 Intent intent = new Intent(AdminPanelActivity.this, DashboardActivity.class);
                 intent.putExtra("username", username); // Pass the username
                 startActivity(intent);
-                startActivity(intent);
             }
         });
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            String selectedAddress = data.getStringExtra("selected_address");
+            if (selectedAddress != null) {
+                edtLibraryLocation.setText(selectedAddress);
+            }
+        }
+    }
 
 }

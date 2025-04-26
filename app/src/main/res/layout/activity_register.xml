@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
         <!-- Name Input -->
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="50dp"
+            android:text="create a new account "
+            android:textColor="#333333"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
         <EditText
             android:id="@+id/edtName"
             android:layout_width="match_parent"
@@ -49,23 +58,22 @@
             android:hint="Password"
             android:inputType="textPassword"
             android:minHeight="48dp" />
-
         <!-- Register Button -->
+
         <Button
             android:id="@+id/btnRegister"
-            android:layout_width="match_parent"
+            android:layout_width="199dp"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/splashBackground"
             android:text="Register"
-            android:backgroundTint="@color/teal_700"
-            android:textColor="@android:color/white"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/btnBack"
-            android:text="back"
-            android:backgroundTint="@color/holo_red_light"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:backgroundTint="#ABA8A8"
+            android:text="back" />
 
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>
+
