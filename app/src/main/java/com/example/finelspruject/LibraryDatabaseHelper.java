@@ -55,7 +55,48 @@ public class LibraryDatabaseHelper extends SQLiteOpenHelper {
                 "    library_id INTEGER,\n" +
                 "lastUpdated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                 "    FOREIGN KEY(library_id) REFERENCES libraries(id)\n" + ")");
+
+        // Insert a default library
+        ContentValues values = new ContentValues();
+        values.put("name", "lodz");
+        values.put("location", "kehilat lodge 56");
+
+        db.insert("libraries", null, values); // Insert into the database
+
+
+
     }
+
+
+    private void insertInitialData(SQLiteDatabase db) {
+        // Create content values for a sample library
+        ContentValues libraryValues = new ContentValues();
+        libraryValues.put("name", "lodz");
+        libraryValues.put("location", "kehilat lodge 56");
+
+        // Insert library
+        long libraryId = db.insert("libraries", null, libraryValues);
+
+        // Add books to that library
+        if (libraryId != -1) {
+            ContentValues book1 = new ContentValues();
+            book1.put("library_id", libraryId);
+            book1.put("title", "The Great Gatsby");
+            book1.put("author", "F. Scott Fitzgerald");
+            book1.put("isbn", "sampleBase64ImageGatsby");
+
+            ContentValues book2 = new ContentValues();
+            book2.put("library_id", libraryId);
+            book2.put("title", "1984");
+            book2.put("author", "George Orwell");
+            book2.put("isbn", "sampleBase64Image1984");
+
+            db.insert("books", null, book1);
+            db.insert("books", null, book2);
+        }
+    }
+
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
