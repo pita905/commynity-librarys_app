@@ -1,0 +1,162 @@
+@startuml
+class SettingsFragment {
+~ Switch switchNotifications
+~ Button btnChangePassword
+}
+
+class ExampleUnitTest {
+}
+class AddBookActivity {
+- {static} int PICK_IMAGE_REQUEST
+~ EditText edtBookTitle
+~ ImageView imgBookCover
+~ Button btnAddBook
+~ LibraryDatabaseHelper dbHelper
+- Bitmap selectedBitmap
+- {static} int REQUEST_STORAGE_PERMISSION
+}
+
+class SearchActivity {
+~ EditText edtSearchBar
+~ ListView listViewResults
+~ ArrayAdapter<String> listAdapter
+~ LibraryDatabaseHelper dbHelper
+~ Button btnBack
+~ List<Library> libraryList
+~ List<String> libraryNames
+}
+
+class ExampleInstrumentedTest {
+}
+class DashboardActivity {
+~ Button btnSearchLibraries
+~ TextView txtAppTitle
+- {static} String ADMIN_PASSWORD
+~ BottomNavigationView bottomNavigationView
+}
+
+class LibraryAdapter {
+- List<Library> libraryList
+- Context context
+}
+
+class LibraryAdapter$LibraryViewHolder {
+~ TextView txtLibraryName
+}
+
+class Library {
+- String name
+- String location
+- List<Book> books
+- int id
+}
+
+class ProfileFragment {
+- {static} String ARG_USERNAME
+- String username
+~ TextView txtName
+~ Button btnLogout
+~ DatabaseHelper dbHelper
+}
+
+class RegisterActivity {
+~ EditText edtName
+~ Button btnRegister
+~ DatabaseHelper dbHelper
+}
+
+class AdminPanelActivity {
+~ EditText edtLibraryName
+~ Button btnAddLibrary
+~ Button btnBack
+~ LibraryDatabaseHelper dbHelper
+}
+
+class MapsActivity {
+- GoogleMap mMap
+- FusedLocationProviderClient fusedLocationClient
+- LibraryDatabaseHelper dbHelper
+- List<Library> libraries
+~ Button btnMyLocation
+}
+
+class HomeActivity {
+~ Button btnLogin
+}
+
+class SplashActivity {
+- {static} int SPLASH_DURATION
+}
+
+class BookAdapter {
+- Context context
+- List<Book> bookList
+- LayoutInflater inflater
+}
+
+class LibraryDatabaseHelper {
+- {static} String DATABASE_NAME
+- {static} int DATABASE_VERSION
+- {static} String TABLE_LIBRARIES
+- {static} String COL_LIBRARY_ID
+- {static} String COL_LIBRARY_NAME
+- {static} String COL_LIBRARY_LOCATION
+- {static} String TABLE_BOOKS
+- {static} String COL_BOOK_ID
+- {static} String COL_BOOK_TITLE
+- {static} String COL_BOOK_AUTHOR
+- {static} String COL_BOOK_LIBRARY_ID
+}
+
+class Book {
+- String title
+- String author
+- String isbn
+}
+
+class LoginActivity {
+~ EditText edtUsername
+~ Button btnLogin
+~ Button btnBack
+~ DatabaseHelper dbHelper
+}
+
+class LibraryDetailsActivity {
+~ Button btnBack
+~ TextView txtLibraryName
+~ ListView listViewBooks
+~ LibraryDatabaseHelper dbHelper
+}
+
+class DatabaseHelper {
+- {static} String DATABASE_NAME
+- {static} int DATABASE_VERSION
+- {static} String TABLE_USERS
+- {static} String COL_USERNAME
+- {static} String COL_PASSWORD
+- {static} String COL_EMAIL
+- {static} String COL_NAME
+}
+
+
+
+Fragment <|-- SettingsFragment
+AppCompatActivity <|-- AddBookActivity
+AppCompatActivity <|-- SearchActivity
+AppCompatActivity <|-- DashboardActivity
+Adapter <|-- LibraryAdapter
+LibraryAdapter +.. LibraryAdapter$LibraryViewHolder
+ViewHolder <|-- LibraryAdapter$LibraryViewHolder
+Fragment <|-- ProfileFragment
+AppCompatActivity <|-- RegisterActivity
+AppCompatActivity <|-- AdminPanelActivity
+OnMapReadyCallback <|.. MapsActivity
+FragmentActivity <|-- MapsActivity
+AppCompatActivity <|-- HomeActivity
+AppCompatActivity <|-- SplashActivity
+BaseAdapter <|-- BookAdapter
+SQLiteOpenHelper <|-- LibraryDatabaseHelper
+AppCompatActivity <|-- LoginActivity
+AppCompatActivity <|-- LibraryDetailsActivity
+SQLiteOpenHelper <|-- DatabaseHelper
+@enduml

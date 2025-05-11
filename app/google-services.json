@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "815210448076",
+    "project_id": "commynity-lilbrarys",
+    "storage_bucket": "commynity-lilbrarys.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:815210448076:android:a2d455bcba49e05ab7ae69",
+        "android_client_info": {
+          "package_name": "com.example.finelspruject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM_SPyIKMuEPtzlGp-I7r0yBWuiuOaUkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
