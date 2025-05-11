@@ -72,8 +72,23 @@ public class BookAdapter extends BaseAdapter {
     }
 
     // Helper method to decode Base64 string into Bitmap
+    //private Bitmap decodeBase64ToBitmap(String base64String) {
+    //    byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
+    //    return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    //}
+    // Helper method to decode Base64 string into Bitmap safely
     private Bitmap decodeBase64ToBitmap(String base64String) {
-        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        if (base64String == null || base64String.trim().isEmpty()) {
+            return BitmapFactory.decodeResource(context.getResources(), R.drawable.default_book_cover);
+        }
+
+        try {
+            byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace(); // log for debugging
+            return BitmapFactory.decodeResource(context.getResources(), R.drawable.default_book_cover);
+        }
     }
+
 }

@@ -22,7 +22,7 @@ public class SearchActivity extends AppCompatActivity {
     EditText edtSearchBar;            // Search input field
     ListView listViewResults;         // ListView to display results
     ArrayAdapter<String> listAdapter; // Adapter for ListView
-    LibraryDatabaseHelper dbHelper;   // Database helper
+    FirebaseLibraryHelper firebaseHelper;   // Firebase helper
     Button btnBack;
     List<Library> libraryList = new ArrayList<>(); // List to store search results
     List<String> libraryNames = new ArrayList<>(); // List to store library names for display
@@ -36,7 +36,7 @@ public class SearchActivity extends AppCompatActivity {
         edtSearchBar = findViewById(R.id.edtSearchBar);
         listViewResults = findViewById(R.id.listViewResults);
         btnBack = findViewById(R.id.btnBack);
-        dbHelper = new LibraryDatabaseHelper(this); // Initialize database helper
+        firebaseHelper = FirebaseLibraryHelper.getInstance(); // Initialize Firebase helper
 
         // Set up ListView adapter
         listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, libraryNames);
@@ -88,9 +88,12 @@ public class SearchActivity extends AppCompatActivity {
             Intent intent = new Intent(SearchActivity.this, LibraryDetailsActivity.class);
             intent.putExtra("library_name", selectedLibrary.getName());
             intent.putExtra("library_location", selectedLibrary.getLocation());
-            intent.putExtra("library_id", selectedLibrary.getId());
+            intent.putExtra("library_id", selectedLibrary.getId()); // Already a string in Firebase model
             // Pass the username to the LibraryDetailsActivity
             intent.putExtra("username", getIntent().getStringExtra("username"));
+            
+            // Log the library ID for debugging
+            Log.d("SearchActivity", "Selected library ID: " + selectedLibrary.getId());
 
             startActivity(intent);
         });
@@ -104,19 +107,39 @@ public class SearchActivity extends AppCompatActivity {
         libraryList.clear(); // Clear previous results
         libraryNames.clear(); // Clear previous display list
 
-        // Fetch all libraries from the database
-        List<Library> allLibraries = dbHelper.getAllLibraries();
-
-        // Filter libraries based on name or location
-        for (Library library : allLibraries) {
-            if (library.getName().toLowerCase().contains(query.toLowerCase()) ||
-                    library.getLocation().toLowerCase().contains(query.toLowerCase())) {
-                libraryList.add(library);
-                libraryNames.add(library.getName()); // Add the library name for display
+        // Fetch all libraries from Firebase
+        firebaseHelper.getAllLibraries(new FirebaseLibraryHelper.OnLibrariesRetrievedListener() {
+            @Override
+            public void onLibrariesRetrieved(boolean success, List<Library> libraries) {
+                if (success && libraries != null) {
+                    // Filter libraries based on name or location
+                    for (Library library : libraries) {
+                        if (query.isEmpty() || 
+                            library.getName().toLowerCase().contains(query.toLowerCase()) ||
+                            library.getLocation().toLowerCase().contains(query.toLowerCase())) {
+                            libraryList.add(library);
+                            libraryNames.add(library.getName()); // Add the library name for display
+                        }
+                    }
+                    
+                    // Update the UI on the main thread
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            listAdapter.notifyDataSetChanged(); // Notify adapter about data changes
+                        }
+                    });
+                } else {
+                    // Handle error
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(SearchActivity.this, "Failed to load libraries", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
-        }
-
-        listAdapter.notifyDataSetChanged(); // Notify adapter about data changes
+        });
     }
 
 

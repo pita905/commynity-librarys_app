@@ -17,7 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.finelspruject.AdminPanelActivity;
 import com.example.finelspruject.DashboardActivity;
-import com.example.finelspruject.DatabaseHelper;
+import com.example.finelspruject.FirebaseHelper;
 import com.example.finelspruject.HomeActivity;
 import com.example.finelspruject.LoginActivity;
 import com.example.finelspruject.R;
@@ -31,7 +31,7 @@ public class ProfileFragment extends Fragment {
 
     TextView txtName, txtEmail, txtUsername;
     Button btnLogout, btnBack;
-    DatabaseHelper dbHelper;
+    FirebaseHelper firebaseHelper;
 
     // Factory method to create a new instance of the fragment with a username
     public static ProfileFragment newInstance(String username) {
@@ -60,7 +60,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        dbHelper = new DatabaseHelper(getActivity());
+        firebaseHelper = FirebaseHelper.getInstance();
         // Initialize views
         txtName = view.findViewById(R.id.txtName);
         txtEmail = view.findViewById(R.id.txtEmail);
@@ -74,19 +74,21 @@ public class ProfileFragment extends Fragment {
             Toast.makeText(getActivity(), "Error: User not found.", Toast.LENGTH_SHORT).show();
             return view;
         }
-        // Fetch user details from the database
-        HashMap<String, String> userDetails = dbHelper.getUserDetails(username);
-
-        // Display user details
-        if (userDetails.isEmpty()) {
-            Log.e("ProfileFragment", "User details not found for username: " + username);
-            Toast.makeText(getActivity(), "Error: User details not found.", Toast.LENGTH_SHORT).show();
-        } else {
-            // Display user details
-            txtName.setText("Name: " + userDetails.get("name"));
-            txtEmail.setText("Email: " + userDetails.get("email"));
-            txtUsername.setText("Username: " + userDetails.get("username"));
-        }
+        // Fetch user details from Firebase
+        firebaseHelper.getUserDetailsByUsername(username, new FirebaseHelper.OnUserDetailsListener() {
+            @Override
+            public void onUserDetailsRetrieved(boolean success, HashMap<String, String> userDetails) {
+                if (!success || userDetails.isEmpty()) {
+                    Log.e("ProfileFragment", "User details not found for username: " + username);
+                    Toast.makeText(getActivity(), "Error: User details not found.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Display user details
+                    txtName.setText("Name: " + userDetails.get("name"));
+                    txtEmail.setText("Email: " + userDetails.get("email"));
+                    txtUsername.setText("Username: " + userDetails.get("username"));
+                }
+            }
+        });
         // Back button action - Remove the fragment
         btnBack.setOnClickListener(v -> {
             // Remove the current fragment completely from the FragmentManager

@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,7 +39,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private LibraryDatabaseHelper dbHelper;
+    private FirebaseLibraryHelper firebaseHelper; // Using Firebase instead of SQLite
     private List<Library> libraries;
     Button btnMyLocation, btnBack;
     @Override
@@ -48,11 +51,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Initialize database helper
-        dbHelper = new LibraryDatabaseHelper(this);
+        // Check Google Play Services availability
+        checkGooglePlayServicesAvailability();
+        
+        // Initialize Firebase helper
+        firebaseHelper = FirebaseLibraryHelper.getInstance();
 
-        // Fetch libraries
-        libraries = dbHelper.getAllLibraries();
+        // Fetch libraries from Firebase
+        fetchLibrariesFromFirebase();
 
         // Initialize location client
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -73,7 +79,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 Intent intent = new Intent(MapsActivity.this, DashboardActivity.class);
                 intent.putExtra("username", username); // Pass the username
-                startActivity(intent);
                 startActivity(intent);
             }
         });
@@ -99,6 +104,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    /**
+     * Check if Google Play Services is available and up-to-date
+     */
+    private void checkGooglePlayServicesAvailability() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                // Show a dialog allowing the user to update Google Play Services
+                apiAvailability.getErrorDialog(this, resultCode, 1);
+            } else {
+                // Google Play Services not available on this device
+                Toast.makeText(this, "Google Play Services not available on this device", 
+                        Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+    }
+    
+    /**
+     * Fetch libraries from Firebase
+     */
+    private void fetchLibrariesFromFirebase() {
+        libraries = new ArrayList<>(); // Initialize empty list
+        
+        firebaseHelper.getAllLibraries(new FirebaseLibraryHelper.OnLibrariesRetrievedListener() {
+            @Override
+            public void onLibrariesRetrieved(boolean success, List<Library> retrievedLibraries) {
+                if (success && retrievedLibraries != null) {
+                    libraries = retrievedLibraries;
+                    // If map is ready, add markers
+                    if (mMap != null) {
+                        addLibraryMarkers();
+                    }
+                } else {
+                    Toast.makeText(MapsActivity.this, "Failed to retrieve libraries", 
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+    
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -152,18 +200,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    /**
+     * Add library markers to the map
+     */
     private void addLibraryMarkers() {
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-
-        for (Library library : libraries) {
+        if (mMap == null || libraries == null) return;
+        
+        // Clear existing markers
+        mMap.clear();
+        
+        // Add markers for all libraries
+        for (Library lib : libraries) {
             try {
-                List<Address> addresses = geocoder.getFromLocationName(library.getLocation(), 1);
-                if (addresses != null && !addresses.isEmpty()) {
-                    Address address = addresses.get(0);
-                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(library.getName()));
+                // Convert address to location
+                String address = lib.getLocation();
+                List<Address> addressList = new Geocoder(this, Locale.getDefault()).getFromLocationName(address, 1);
+                if (addressList != null && !addressList.isEmpty()) {
+                    Address location = addressList.get(0);
+                    LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(position).title(lib.getName()));
                 }
             } catch (IOException e) {
+                Log.e("MapsActivity", "Error geocoding address: " + e.getMessage());
                 e.printStackTrace();
             }
         }

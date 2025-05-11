@@ -15,7 +15,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     EditText edtName, edtEmail, edtUsername, edtPassword;
     Button btnRegister, btnBack;
-    DatabaseHelper dbHelper;
+    FirebaseHelper firebaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
         btnBack = findViewById(R.id.btnBack);
 
-        dbHelper = new DatabaseHelper(this);
+        firebaseHelper = FirebaseHelper.getInstance();
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,17 +51,30 @@ public class RegisterActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
                     Toast.makeText(RegisterActivity.this, "Please fill all fields!", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Insert user into the database
-                    long result = dbHelper.registerUser(name, email, username, password);
-
-                    if (result != -1) {
-                        Toast.makeText(RegisterActivity.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(RegisterActivity.this, "Registration Failed! Username might already exist.", Toast.LENGTH_SHORT).show();
-                    }
+                    // Check if the username already exists
+                    firebaseHelper.checkUserExists(username, new FirebaseHelper.OnUserExistsCheckListener() {
+                        @Override
+                        public void onUserExistsCheck(boolean exists) {
+                            if (exists) {
+                                Toast.makeText(RegisterActivity.this, "Username already exists!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                // Register user with Firebase
+                                firebaseHelper.registerUser(name, email, username, password, new FirebaseHelper.OnRegistrationListener() {
+                                    @Override
+                                    public void onRegistrationComplete(boolean success, String message) {
+                                        if (success) {
+                                            Toast.makeText(RegisterActivity.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
                 }
             }
         });

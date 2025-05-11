@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class SplashActivity extends AppCompatActivity {
 
     // Define the duration for the splash screen (in milliseconds)
+
     private static final int SPLASH_DURATION = 3000; // 3000ms = 3 seconds
 
     @Override

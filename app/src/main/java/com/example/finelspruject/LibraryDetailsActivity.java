@@ -22,7 +22,7 @@ public class LibraryDetailsActivity extends AppCompatActivity {
     Button btnBack, btnAddBook , btnNavigate;
     TextView txtLibraryName, txtLibraryLocation;
     ListView listViewBooks;
-    LibraryDatabaseHelper dbHelper;
+    FirebaseLibraryHelper firebaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class LibraryDetailsActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         listViewBooks = findViewById(R.id.listViewBooks);
 
-        dbHelper = new LibraryDatabaseHelper(this);
+        firebaseHelper = FirebaseLibraryHelper.getInstance();
 
         String username = getIntent().getStringExtra("username");
         if (username == null) {
@@ -49,7 +49,7 @@ public class LibraryDetailsActivity extends AppCompatActivity {
         // Retrieve library details from intent
         String libraryName = getIntent().getStringExtra("library_name");
         String libraryLocation = getIntent().getStringExtra("library_location");
-        int libraryId = getIntent().getIntExtra("library_id", -1); // Library ID to fetch books
+        String libraryId = getIntent().getStringExtra("library_id"); // Library ID to fetch books
 
         // Set library details
         txtLibraryName.setText("Library Name: " + libraryName);
@@ -60,7 +60,7 @@ public class LibraryDetailsActivity extends AppCompatActivity {
         btnAddBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int libraryId = getIntent().getIntExtra("library_id", -1); // Pass library ID to AddBookActivity
+                String libraryId = getIntent().getStringExtra("library_id"); // Pass library ID to AddBookActivity
                 Intent intent = new Intent(LibraryDetailsActivity.this, AddBookActivity.class);
                 intent.putExtra("library_id", libraryId);
                 startActivity(intent);
@@ -104,14 +104,23 @@ public class LibraryDetailsActivity extends AppCompatActivity {
 @Override
 protected void onResume() {
     super.onResume();
-    int libraryId = getIntent().getIntExtra("library_id", -1);
-
-    // Fetch books for this library
-    List<Book> bookList = dbHelper.getBooksByLibraryId(libraryId);
-
-    // Use custom adapter
-    BookAdapter bookAdapter = new BookAdapter(this, bookList);
-    listViewBooks.setAdapter(bookAdapter);
+    String libraryId = getIntent().getStringExtra("library_id");
+    
+    if (libraryId != null && !libraryId.isEmpty()) {
+        // Fetch books for this library using Firebase
+        firebaseHelper.getBooksByLibraryId(libraryId, new FirebaseLibraryHelper.OnBooksRetrievedListener() {
+            @Override
+            public void onBooksRetrieved(boolean success, List<Book> books) {
+                if (success && books != null) {
+                    // Use custom adapter
+                    BookAdapter bookAdapter = new BookAdapter(LibraryDetailsActivity.this, books);
+                    listViewBooks.setAdapter(bookAdapter);
+                } else {
+                    Toast.makeText(LibraryDetailsActivity.this, "Failed to load books", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 }
 //u
 }

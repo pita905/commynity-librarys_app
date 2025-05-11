@@ -26,7 +26,7 @@ public class AddBookActivity extends AppCompatActivity {
     EditText edtBookTitle, edtBookAuthor;
     ImageView imgBookCover;
     Button btnAddBook, btnSelectImage, btnCancel;
-    LibraryDatabaseHelper dbHelper;
+    FirebaseLibraryHelper firebaseHelper;
     private static final int REQUEST_IMAGE_CAPTURE = 2;
 
     private Bitmap selectedBitmap = null; // Store the selected image as a Bitmap
@@ -45,11 +45,11 @@ public class AddBookActivity extends AppCompatActivity {
         btnSelectImage = findViewById(R.id.btnSelectImage);
         btnCancel = findViewById(R.id.btnCancel);
 
-        dbHelper = new LibraryDatabaseHelper(this);
+        firebaseHelper = FirebaseLibraryHelper.getInstance();
 
         // Get the library ID from the intent
-        int libraryId = getIntent().getIntExtra("library_id", -1);
-        if (libraryId == -1) {
+        String libraryId = getIntent().getStringExtra("library_id");
+        if (libraryId == null || libraryId.isEmpty()) {
             Toast.makeText(this, "Invalid library ID. Cannot add book.", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -72,14 +72,18 @@ public class AddBookActivity extends AppCompatActivity {
                     imageString = convertBitmapToBase64(selectedBitmap); // Convert the image to a Base64 string
                 }
 
-                // Add book to database
-                boolean success = dbHelper.addBookToLibraryWithImage(libraryId, title, author, imageString);
-                if (success) {
-                    Toast.makeText(AddBookActivity.this, "Book added successfully!", Toast.LENGTH_SHORT).show();
-                    finish(); // Go back to the previous activity
-                } else {
-                    Toast.makeText(AddBookActivity.this, "Error adding book. Try again.", Toast.LENGTH_SHORT).show();
-                }
+                // Add book to database using Firebase
+                firebaseHelper.addBookToLibraryWithImage(libraryId, title, author, imageString, new FirebaseLibraryHelper.OnBookAddedListener() {
+                    @Override
+                    public void onBookAdded(boolean success, String message) {
+                        if (success) {
+                            Toast.makeText(AddBookActivity.this, "Book added successfully!", Toast.LENGTH_SHORT).show();
+                            finish(); // Go back to the previous activity
+                        } else {
+                            Toast.makeText(AddBookActivity.this, "Error adding book: " + message, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
 
