@@ -45,9 +45,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 
-                // Check if credentials are valid using Firebase
-                // Note: Firebase Authentication uses email for login, not username
-                // So we need to construct an email from username or get the associated email
+
                 
                 // Query Firestore to get the email associated with this username
                 firebaseHelper.getEmailByUsername(username, new FirebaseHelper.OnEmailRetrievedListener() {

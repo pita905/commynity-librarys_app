@@ -56,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onUserExistsCheck(boolean exists) {
                             if (exists) {
-                                Toast.makeText(RegisterActivity.this, "Username already exists!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "", Toast.LENGTH_SHORT).show();
                             } else {
                                 // Register user with Firebase
                                 firebaseHelper.registerUser(name, email, username, password, new FirebaseHelper.OnRegistrationListener() {
